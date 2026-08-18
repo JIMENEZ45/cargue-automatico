@@ -1,2 +1,17 @@
+[project]
+name = "auto-prizma-pro"
+version = "1.0.0"
+description = "Automatizador de cargue de recursos academicos en PRIZMA"
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    "fastapi==0.141.1",
+    "uvicorn[standard]==0.52.3",
+    "python-multipart==0.0.32",
+    "jinja2==3.1.6",
+    "openpyxl==3.1.5",
+    "playwright==1.62.0",
+]
+
 [tool.vercel]
 entrypoint = "aplicacion:app"
