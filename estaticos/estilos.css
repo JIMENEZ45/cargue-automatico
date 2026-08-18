@@ -1,0 +1,527 @@
+/* ============================================================
+   AUTO PRIZMA PRO - ESTILOS
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+:root {
+    --tinta: #16211F;
+    --tinta-suave: #4A5754;
+    --tinta-tenue: #7C8785;
+
+    --papel: #EDEDE6;
+    --superficie: #FFFFFF;
+    --superficie-alt: #F6F6F1;
+
+    --pino: #17423B;
+    --pino-claro: #E3ECE9;
+    --pino-borde: #C3D6D1;
+
+    --senal: #E3B505;
+    --senal-oscuro: #8A6D02;
+    --senal-tenue: #FBF0CC;
+
+    --error: #96271F;
+    --error-tenue: #F8E7E5;
+    --exito: #17423B;
+    --exito-tenue: #DFEDE7;
+
+    --borde: #D6D6CD;
+    --borde-fuerte: #B4B4A8;
+
+    --radio: 6px;
+    --sombra: 0 1px 2px rgba(22, 33, 31, 0.06);
+
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --display: 'Archivo', 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+a { color: var(--pino); }
+
+:focus-visible {
+    outline: 2px solid var(--pino);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   ENCABEZADO
+   ============================================================ */
+
+.barra-superior {
+    background: var(--pino);
+    color: var(--papel);
+    border-bottom: 3px solid var(--senal);
+}
+
+.barra-contenido {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.marca {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+.marca span { color: var(--senal); }
+
+.sello {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: rgba(237, 237, 230, 0.72);
+    letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   ESTRUCTURA
+   ============================================================ */
+
+.pagina {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 72px;
+}
+
+.tarjeta {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.tarjeta-titulo {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 4px;
+}
+
+.tarjeta-nota {
+    color: var(--tinta-suave);
+    font-size: 13.5px;
+    margin: 0 0 20px;
+}
+
+.rejilla-dos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 720px) {
+    .rejilla-dos { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   CAMPOS DE ARCHIVO
+   ============================================================ */
+
+.campo-archivo {
+    border: 1.5px dashed var(--borde-fuerte);
+    border-radius: var(--radio);
+    background: var(--superficie-alt);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+
+.campo-archivo:hover { border-color: var(--pino); background: var(--pino-claro); }
+
+.campo-archivo.cargado {
+    border-style: solid;
+    border-color: var(--pino);
+    background: var(--pino-claro);
+}
+
+.campo-archivo input[type="file"] { display: none; }
+
+.campo-etiqueta {
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tinta-suave);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.campo-valor {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--tinta-tenue);
+    word-break: break-all;
+}
+
+.campo-archivo.cargado .campo-valor { color: var(--pino); font-weight: 500; }
+
+/* ============================================================
+   CASILLAS DE CATEGORIA
+   ============================================================ */
+
+.grupo-categorias {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.casilla {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    padding: 9px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    background: var(--superficie);
+    user-select: none;
+}
+
+.casilla:has(input:checked) {
+    border-color: var(--pino);
+    background: var(--pino-claro);
+    color: var(--pino);
+}
+
+.casilla input { accent-color: var(--pino); width: 16px; height: 16px; margin: 0; }
+
+/* ============================================================
+   AVISOS
+   ============================================================ */
+
+.aviso {
+    border-left: 3px solid var(--senal);
+    background: var(--senal-tenue);
+    color: #5C4802;
+    padding: 12px 16px;
+    border-radius: 0;
+    font-size: 13.5px;
+    margin: 18px 0;
+}
+
+.aviso-error {
+    border-left-color: var(--error);
+    background: var(--error-tenue);
+    color: var(--error);
+}
+
+.aviso-exito {
+    border-left-color: var(--exito);
+    background: var(--exito-tenue);
+    color: var(--exito);
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+
+.boton {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radio);
+    padding: 13px 26px;
+    cursor: pointer;
+    transition: background .15s, transform .05s;
+}
+
+.boton:active { transform: translateY(1px); }
+
+.boton:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+.boton-principal { background: var(--pino); color: #FFFFFF; }
+.boton-principal:hover:not(:disabled) { background: #0F2F2A; }
+
+.boton-accion { background: var(--senal); color: #3D3000; }
+.boton-accion:hover:not(:disabled) { background: #C99F04; }
+
+.boton-secundario {
+    background: transparent;
+    color: var(--tinta-suave);
+    border: 1.5px solid var(--borde-fuerte);
+}
+.boton-secundario:hover:not(:disabled) { border-color: var(--pino); color: var(--pino); }
+
+.boton-ancho { width: 100%; }
+
+.fila-botones { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ============================================================
+   INDICADORES
+   ============================================================ */
+
+.rejilla-indicadores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--borde);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+}
+
+.indicador { background: var(--superficie); padding: 16px 18px; }
+
+@media (max-width: 760px) {
+    .rejilla-indicadores { grid-template-columns: repeat(2, 1fr); }
+}
+
+.indicador-numero {
+    font-family: var(--display);
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--pino);
+}
+
+.indicador-numero.alerta { color: var(--error); }
+
+.indicador-etiqueta {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--tinta-tenue);
+    margin-top: 4px;
+}
+
+/* ============================================================
+   FICHA DE CURSO
+   ============================================================ */
+
+.ficha-curso {
+    border-left: 3px solid var(--pino);
+    padding-left: 18px;
+    margin-bottom: 22px;
+}
+
+.ficha-etiqueta {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--tinta-tenue);
+}
+
+.ficha-valor {
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.ficha-programa { font-size: 14px; color: var(--tinta-suave); font-family: var(--sans); font-weight: 400; }
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+
+.envoltura-tabla {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: auto;
+    max-height: 460px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: var(--superficie-alt);
+    text-align: left;
+    padding: 11px 14px;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tinta-suave);
+    border-bottom: 1px solid var(--borde);
+    white-space: nowrap;
+}
+
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--superficie-alt); }
+
+tbody tr:last-child td { border-bottom: none; }
+
+tbody tr:hover { background: var(--superficie-alt); }
+
+.celda-mono { font-family: var(--mono); font-size: 12.5px; color: var(--tinta-tenue); }
+
+/* ============================================================
+   ETIQUETAS
+   ============================================================ */
+
+.etiqueta {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-family: var(--mono);
+}
+
+.etiqueta-ovi { background: var(--pino-claro); color: var(--pino); }
+.etiqueta-ova { background: var(--senal-tenue); color: var(--senal-oscuro); }
+.etiqueta-h5p { background: #E9E6F5; color: #453A7A; }
+.etiqueta-pdf { background: #F5E9E6; color: #7A483A; }
+
+/* ============================================================
+   CREDENCIALES
+   ============================================================ */
+
+.campo-texto { margin-bottom: 14px; }
+
+.campo-texto label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tinta-suave);
+    margin-bottom: 6px;
+}
+
+.campo-texto input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 11px 14px;
+    border: 1.5px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    background: var(--superficie);
+    color: var(--tinta);
+}
+
+.campo-texto input:focus { outline: none; border-color: var(--pino); }
+
+.nota-seguridad {
+    font-size: 12.5px;
+    color: var(--tinta-tenue);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   PROGRESO
+   ============================================================ */
+
+.barra-progreso {
+    height: 10px;
+    background: var(--superficie-alt);
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 18px 0 10px;
+}
+
+.barra-relleno {
+    height: 100%;
+    background: var(--pino);
+    width: 0%;
+    transition: width .4s ease;
+}
+
+.linea-estado {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--tinta-suave);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.actividad-actual {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 500;
+    margin: 4px 0 0;
+    min-height: 26px;
+}
+
+/* Señal visual: el registro de filas procesadas */
+.registro-filas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 20px;
+}
+
+.marca-fila {
+    width: 11px;
+    height: 20px;
+    border-radius: 1px;
+    background: var(--superficie-alt);
+    border: 1px solid var(--borde);
+}
+
+.marca-fila.exito { background: var(--pino); border-color: var(--pino); }
+.marca-fila.error { background: var(--error); border-color: var(--error); }
+.marca-fila.activa { background: var(--senal); border-color: var(--senal-oscuro); }
+
+/* ============================================================
+   CARGADOR
+   ============================================================ */
+
+.cargador {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: girar .7s linear infinite;
+    vertical-align: -2px;
+    margin-right: 8px;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ============================================================
+   PIE
+   ============================================================ */
+
+.pie {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--tinta-tenue);
+    padding: 24px;
+}
+
+.oculto { display: none !important; }

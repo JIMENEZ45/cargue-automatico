@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block titulo %}Cargue en curso &middot; {{ nombre_aplicacion }}{% endblock %}
+{% block sello %}Paso 3 de 3 &middot; Cargue en PRIZMA{% endblock %}
+
+{% block contenido %}
+
+<div class="tarjeta">
+    <div class="ficha-curso">
+        <div class="ficha-etiqueta">Cargando curso</div>
+        <div class="ficha-valor">{{ curso or "Curso sin nombre" }}</div>
+        <div class="ficha-programa">{{ programa }}</div>
+    </div>
+
+    <div class="ficha-etiqueta">Estado</div>
+    <p class="actividad-actual" id="texto-actividad">Preparando el navegador</p>
+
+    <div class="barra-progreso">
+        <div class="barra-relleno" id="relleno-progreso"></div>
+    </div>
+
+    <div class="linea-estado">
+        <span id="texto-contador">0 de {{ total }}</span>
+        <span id="texto-porcentaje">0%</span>
+    </div>
+
+    <div class="registro-filas" id="registro-filas"></div>
+</div>
+
+<div class="tarjeta">
+    <div class="rejilla-indicadores">
+        <div class="indicador">
+            <div class="indicador-numero" id="numero-procesadas">0</div>
+            <div class="indicador-etiqueta">Procesadas</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero" id="numero-exitosas">0</div>
+            <div class="indicador-etiqueta">Exitosas</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero alerta" id="numero-errores">0</div>
+            <div class="indicador-etiqueta">Errores</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ total }}</div>
+            <div class="indicador-etiqueta">Total</div>
+        </div>
+    </div>
+
+    <div id="aviso-final" class="aviso aviso-exito oculto" style="margin-top:20px"></div>
+
+    <div class="fila-botones" style="margin-top:20px">
+        <a href="/reporte/{{ id_trabajo }}" class="boton boton-accion oculto" id="boton-reporte"
+           style="text-decoration:none;display:inline-block">
+            Descargar reporte CSV
+        </a>
+        <a href="/" class="boton boton-secundario oculto" id="boton-nuevo"
+           style="text-decoration:none;display:inline-block">
+            Cargar otro curso
+        </a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block guion %}
+<script>
+(function () {
+    const idTrabajo = "{{ id_trabajo }}";
+    const total = {{ total }};
+
+    const registro = document.getElementById('registro-filas');
+    for (let i = 0; i < total; i++) {
+        const marca = document.createElement('span');
+        marca.className = 'marca-fila';
+        registro.appendChild(marca);
+    }
+    const marcas = registro.children;
+
+    let ultimoProcesado = 0;
+    let ultimoExitosas = 0;
+
+    function pintarMarcas(estado) {
+        // Pinta las marcas nuevas desde el ultimo corte conocido
+        const nuevasExitosas = estado.exitosas - ultimoExitosas;
+        for (let i = ultimoProcesado; i < estado.procesadas && i < marcas.length; i++) {
+            const esExito = (i - ultimoProcesado) < nuevasExitosas;
+            marcas[i].className = 'marca-fila ' + (esExito ? 'exito' : 'error');
+        }
+        ultimoProcesado = estado.procesadas;
+        ultimoExitosas = estado.exitosas;
+
+        if (estado.procesadas < marcas.length && estado.estado === 'en_proceso') {
+            marcas[estado.procesadas].className = 'marca-fila activa';
+        }
+    }
+
+    async function consultarEstado() {
+        try {
+            const respuesta = await fetch('/estado/' + idTrabajo);
+            if (!respuesta.ok) { return; }
+            const estado = await respuesta.json();
+
+            document.getElementById('numero-procesadas').textContent = estado.procesadas;
+            document.getElementById('numero-exitosas').textContent = estado.exitosas;
+            document.getElementById('numero-errores').textContent = estado.errores;
+            document.getElementById('texto-contador').textContent =
+                estado.procesadas + ' de ' + estado.total;
+            document.getElementById('texto-porcentaje').textContent = estado.porcentaje + '%';
+            document.getElementById('relleno-progreso').style.width = estado.porcentaje + '%';
+
+            if (estado.estado === 'en_proceso' && estado.actividad_actual) {
+                document.getElementById('texto-actividad').textContent =
+                    'Procesando ' + (estado.procesadas + 1) + ' de ' + estado.total +
+                    ': ' + estado.actividad_actual;
+            } else {
+                document.getElementById('texto-actividad').textContent = estado.mensaje;
+            }
+
+            pintarMarcas(estado);
+
+            if (estado.estado === 'terminado' || estado.estado === 'fallido') {
+                terminar(estado);
+                return;
+            }
+
+            setTimeout(consultarEstado, 1500);
+        } catch (fallo) {
+            setTimeout(consultarEstado, 3000);
+        }
+    }
+
+    function terminar(estado) {
+        const aviso = document.getElementById('aviso-final');
+        aviso.classList.remove('oculto');
+
+        if (estado.estado === 'fallido') {
+            aviso.className = 'aviso aviso-error';
+            aviso.textContent = estado.mensaje;
+        } else {
+            aviso.className = 'aviso aviso-exito';
+            aviso.textContent = 'Proceso terminado. ' + estado.exitosas +
+                ' exitosas y ' + estado.errores + ' con error.';
+        }
+
+        if (estado.reporte_disponible) {
+            document.getElementById('boton-reporte').classList.remove('oculto');
+        }
+        document.getElementById('boton-nuevo').classList.remove('oculto');
+    }
+
+    consultarEstado();
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}{{ nombre_aplicacion }}{% endblock %}</title>
+    <link rel="stylesheet" href="/estaticos/estilos.css">
+</head>
+<body>
+
+<header class="barra-superior">
+    <div class="barra-contenido">
+        <h1 class="marca">AUTO PRIZMA <span>PRO</span></h1>
+        <div class="sello">{% block sello %}Cargue masivo de recursos academicos{% endblock %}</div>
+    </div>
+</header>
+
+<main class="pagina">
+    {% block contenido %}{% endblock %}
+</main>
+
+<footer class="pie">
+    Los archivos se eliminan al terminar. Las credenciales no se guardan en ningún momento.
+</footer>
+
+<script src="/estaticos/aplicacion.js"></script>
+{% block guion %}{% endblock %}
+
+</body>
+</html>

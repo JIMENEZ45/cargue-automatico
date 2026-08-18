@@ -1,0 +1,14 @@
+# ============================================================
+# AUTO PRIZMA PRO - DEPENDENCIAS
+# ============================================================
+# Combinacion verificada. La version de playwright que instala
+# pip es la que descarga su propio Chromium en el Dockerfile,
+# por lo que libreria y navegador siempre coinciden.
+# ============================================================
+
+fastapi==0.141.1
+uvicorn[standard]==0.52.3
+python-multipart==0.0.32
+jinja2==3.1.6
+openpyxl==3.1.5
+playwright==1.62.0

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ nombre_aplicacion }}{% endblock %}
+{% block sello %}Paso 1 de 3 &middot; Seleccionar archivos{% endblock %}
+
+{% block contenido %}
+
+{% if not playwright_listo %}
+<div class="aviso aviso-error">
+    Chromium no está disponible en este servidor. Puedes analizar archivos, pero el cargue no arrancará.
+</div>
+{% endif %}
+
+<div class="tarjeta">
+    <h2 class="tarjeta-titulo">Archivos del curso</h2>
+    <p class="tarjeta-nota">
+        Sube la matriz del curso y el paquete de recursos. Nada se envía a PRIZMA todavía.
+    </p>
+
+    <form id="formulario-analisis">
+        <div class="rejilla-dos">
+            <label class="campo-archivo" id="zona-excel">
+                <span class="campo-etiqueta">Matriz del curso</span>
+                <span class="campo-valor" id="nombre-excel">Elegir archivo .xlsx</span>
+                <input type="file" id="archivo-excel" name="archivo_excel" accept=".xlsx" required>
+            </label>
+
+            <label class="campo-archivo" id="zona-zip">
+                <span class="campo-etiqueta">Paquete de recursos</span>
+                <span class="campo-valor" id="nombre-zip">Elegir archivo .zip</span>
+                <input type="file" id="archivo-zip" name="archivo_zip" accept=".zip" required>
+            </label>
+        </div>
+
+        <p class="campo-etiqueta" style="margin-top:24px">Categorías a procesar</p>
+        <div class="grupo-categorias">
+            <label class="casilla">
+                <input type="checkbox" value="OVI" checked class="casilla-categoria"> OVI
+            </label>
+            <label class="casilla">
+                <input type="checkbox" value="OVA" checked class="casilla-categoria"> OVA
+            </label>
+        </div>
+
+        <div class="aviso">
+            Retos Evaluativos, Challenge, Video Intro, Video Cierre y Video a cámara se omiten.
+            Esas actividades no se modifican en PRIZMA.
+        </div>
+
+        <div id="mensaje-error" class="aviso aviso-error oculto"></div>
+
+        <button type="submit" class="boton boton-principal boton-ancho" id="boton-analizar">
+            Analizar archivos
+        </button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block guion %}
+<script>
+(function () {
+    enlazarCampoArchivo('archivo-excel', 'nombre-excel', 'zona-excel');
+    enlazarCampoArchivo('archivo-zip', 'nombre-zip', 'zona-zip');
+
+    const formulario = document.getElementById('formulario-analisis');
+    const boton = document.getElementById('boton-analizar');
+    const error = document.getElementById('mensaje-error');
+
+    formulario.addEventListener('submit', async function (evento) {
+        evento.preventDefault();
+        ocultarError(error);
+
+        const excel = document.getElementById('archivo-excel').files[0];
+        const zip = document.getElementById('archivo-zip').files[0];
+
+        if (!excel) { return mostrarError(error, 'Elige la matriz del curso en formato .xlsx'); }
+        if (!zip) { return mostrarError(error, 'Elige el paquete de recursos en formato .zip'); }
+
+        const categorias = leerCategoriasSeleccionadas();
+        if (categorias.length === 0) {
+            return mostrarError(error, 'Marca al menos una categoría: OVI u OVA');
+        }
+
+        const datos = new FormData();
+        datos.append('archivo_excel', excel);
+        datos.append('archivo_zip', zip);
+        datos.append('categorias', categorias.join(','));
+
+        activarCargando(boton, 'Analizando archivos');
+
+        try {
+            const respuesta = await fetch('/analizar', { method: 'POST', body: datos });
+            const cuerpo = await respuesta.json();
+
+            if (!respuesta.ok) {
+                desactivarCargando(boton, 'Analizar archivos');
+                return mostrarError(error, cuerpo.detail || 'No se pudo analizar los archivos.');
+            }
+
+            window.location.href = '/analisis/' + cuerpo.id_trabajo;
+        } catch (fallo) {
+            desactivarCargando(boton, 'Analizar archivos');
+            mostrarError(error, 'Se perdió la conexión con el servidor. Inténtalo de nuevo.');
+        }
+    });
+})();
+</script>
+{% endblock %}

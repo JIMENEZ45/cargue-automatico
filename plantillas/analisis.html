@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block titulo %}Revisar analisis &middot; {{ nombre_aplicacion }}{% endblock %}
+{% block sello %}Paso 2 de 3 &middot; Revisar y confirmar{% endblock %}
+
+{% block contenido %}
+
+<div class="tarjeta">
+    <div class="ficha-curso">
+        <div class="ficha-etiqueta">Curso detectado</div>
+        <div class="ficha-valor">{{ resumen.curso or "Sin curso detectado" }}</div>
+        <div class="ficha-programa">{{ resumen.programa or "Sin programa detectado" }}</div>
+    </div>
+
+    <div class="rejilla-indicadores">
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.cantidad_ovi }}</div>
+            <div class="indicador-etiqueta">OVI</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.cantidad_ova }}</div>
+            <div class="indicador-etiqueta">OVA</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.h5p_esperados }}</div>
+            <div class="indicador-etiqueta">H5P esperados</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.pdf_esperados }}</div>
+            <div class="indicador-etiqueta">PDF esperados</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.h5p_en_zip }}</div>
+            <div class="indicador-etiqueta">H5P en el ZIP</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.pdf_en_zip }}</div>
+            <div class="indicador-etiqueta">PDF en el ZIP</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">{{ resumen.total_recursos }}</div>
+            <div class="indicador-etiqueta">Total en el ZIP</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero {% if resumen.omitidas %}alerta{% endif %}">{{ resumen.omitidas }}</div>
+            <div class="indicador-etiqueta">Omitidas</div>
+        </div>
+    </div>
+
+    {% set faltan = resumen.h5p_esperados > resumen.h5p_en_zip or resumen.pdf_esperados > resumen.pdf_en_zip %}
+    {% if faltan %}
+    <div class="aviso">
+        El ZIP tiene menos archivos que las actividades esperadas. Las que no encuentren
+        recurso quedarán registradas como error y el proceso continuará con las demás.
+    </div>
+    {% endif %}
+</div>
+
+<div class="tarjeta">
+    <h2 class="tarjeta-titulo">Actividades que se procesarán</h2>
+    <p class="tarjeta-nota">{{ resumen.total_actividades }} actividades en total.</p>
+
+    <div class="envoltura-tabla">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fila</th>
+                    <th>Semana</th>
+                    <th>Unidad</th>
+                    <th>Actividad</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for actividad in resumen.actividades %}
+                <tr>
+                    <td class="celda-mono">{{ actividad.fila_excel }}</td>
+                    <td>{{ actividad.semana }}</td>
+                    <td>{{ actividad.unidad }}</td>
+                    <td>{{ actividad.nombre }}</td>
+                    <td>
+                        <span class="etiqueta etiqueta-{{ actividad.categoria|lower }}">{{ actividad.categoria }}</span>
+                    </td>
+                    <td>
+                        {% if actividad.extension_esperada == '.h5p' %}
+                        <span class="etiqueta etiqueta-h5p">H5P</span>
+                        {% else %}
+                        <span class="etiqueta etiqueta-pdf">PDF</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="tarjeta">
+    <h2 class="tarjeta-titulo">Credenciales de PRIZMA</h2>
+    <p class="tarjeta-nota">
+        Entra con tu propia cuenta. PRIZMA registrará los cambios a tu nombre.
+    </p>
+
+    <form id="formulario-inicio">
+        <div class="campo-texto">
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario" name="usuario" autocomplete="username" required>
+        </div>
+
+        <div class="campo-texto">
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena" name="contrasena" autocomplete="current-password" required>
+        </div>
+
+        <p class="nota-seguridad">
+            Las credenciales viven solo en la memoria del servidor mientras corre este cargue.
+            No se escriben en disco, no se registran en los logs y desaparecen al terminar.
+        </p>
+
+        {% if not modo_servidor %}
+        <label class="casilla" style="margin-top:14px">
+            <input type="checkbox" id="login-manual"> Iniciar sesión a mano en la ventana de Chromium
+        </label>
+        {% endif %}
+
+        <div id="mensaje-error" class="aviso aviso-error oculto"></div>
+
+        <div class="fila-botones" style="margin-top:22px">
+            <button type="submit" class="boton boton-accion" id="boton-iniciar">
+                Iniciar cargue en PRIZMA
+            </button>
+            <a href="/" class="boton boton-secundario" style="text-decoration:none;display:inline-block">
+                Cambiar archivos
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block guion %}
+<script>
+(function () {
+    const idTrabajo = "{{ resumen.id_trabajo }}";
+    const formulario = document.getElementById('formulario-inicio');
+    const boton = document.getElementById('boton-iniciar');
+    const error = document.getElementById('mensaje-error');
+    const casillaManual = document.getElementById('login-manual');
+
+    if (casillaManual) {
+        casillaManual.addEventListener('change', function () {
+            const manual = casillaManual.checked;
+            document.getElementById('usuario').required = !manual;
+            document.getElementById('contrasena').required = !manual;
+        });
+    }
+
+    formulario.addEventListener('submit', async function (evento) {
+        evento.preventDefault();
+        ocultarError(error);
+
+        const manual = casillaManual ? casillaManual.checked : false;
+        const usuario = document.getElementById('usuario').value.trim();
+        const contrasena = document.getElementById('contrasena').value;
+
+        if (!manual && (!usuario || !contrasena)) {
+            return mostrarError(error, 'Escribe tu usuario y contraseña de PRIZMA.');
+        }
+
+        const datos = new FormData();
+        datos.append('usuario', usuario);
+        datos.append('contrasena', contrasena);
+        datos.append('login_manual', manual ? 'true' : 'false');
+
+        activarCargando(boton, 'Iniciando');
+
+        try {
+            const respuesta = await fetch('/iniciar/' + idTrabajo, { method: 'POST', body: datos });
+            const cuerpo = await respuesta.json();
+
+            if (!respuesta.ok) {
+                desactivarCargando(boton, 'Iniciar cargue en PRIZMA');
+                return mostrarError(error, cuerpo.detail || 'No se pudo iniciar el cargue.');
+            }
+
+            window.location.href = '/proceso/' + idTrabajo;
+        } catch (fallo) {
+            desactivarCargando(boton, 'Iniciar cargue en PRIZMA');
+            mostrarError(error, 'Se perdió la conexión con el servidor.');
+        }
+    });
+})();
+</script>
+{% endblock %}

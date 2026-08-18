@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto Prizma Pro · Vista previa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ============================================================
+   AUTO PRIZMA PRO - ESTILOS
+   ============================================================ */
+
+600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+:root {
+    --tinta: #16211F;
+    --tinta-suave: #4A5754;
+    --tinta-tenue: #7C8785;
+
+    --papel: #EDEDE6;
+    --superficie: #FFFFFF;
+    --superficie-alt: #F6F6F1;
+
+    --pino: #17423B;
+    --pino-claro: #E3ECE9;
+    --pino-borde: #C3D6D1;
+
+    --senal: #E3B505;
+    --senal-oscuro: #8A6D02;
+    --senal-tenue: #FBF0CC;
+
+    --error: #96271F;
+    --error-tenue: #F8E7E5;
+    --exito: #17423B;
+    --exito-tenue: #DFEDE7;
+
+    --borde: #D6D6CD;
+    --borde-fuerte: #B4B4A8;
+
+    --radio: 6px;
+    --sombra: 0 1px 2px rgba(22, 33, 31, 0.06);
+
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --display: 'Archivo', 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+a { color: var(--pino); }
+
+:focus-visible {
+    outline: 2px solid var(--pino);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   ENCABEZADO
+   ============================================================ */
+
+.barra-superior {
+    background: var(--pino);
+    color: var(--papel);
+    border-bottom: 3px solid var(--senal);
+}
+
+.barra-contenido {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.marca {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+.marca span { color: var(--senal); }
+
+.sello {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: rgba(237, 237, 230, 0.72);
+    letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   ESTRUCTURA
+   ============================================================ */
+
+.pagina {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 72px;
+}
+
+.tarjeta {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.tarjeta-titulo {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 4px;
+}
+
+.tarjeta-nota {
+    color: var(--tinta-suave);
+    font-size: 13.5px;
+    margin: 0 0 20px;
+}
+
+.rejilla-dos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 720px) {
+    .rejilla-dos { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   CAMPOS DE ARCHIVO
+   ============================================================ */
+
+.campo-archivo {
+    border: 1.5px dashed var(--borde-fuerte);
+    border-radius: var(--radio);
+    background: var(--superficie-alt);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+
+.campo-archivo:hover { border-color: var(--pino); background: var(--pino-claro); }
+
+.campo-archivo.cargado {
+    border-style: solid;
+    border-color: var(--pino);
+    background: var(--pino-claro);
+}
+
+.campo-archivo input[type="file"] { display: none; }
+
+.campo-etiqueta {
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tinta-suave);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.campo-valor {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--tinta-tenue);
+    word-break: break-all;
+}
+
+.campo-archivo.cargado .campo-valor { color: var(--pino); font-weight: 500; }
+
+/* ============================================================
+   CASILLAS DE CATEGORIA
+   ============================================================ */
+
+.grupo-categorias {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.casilla {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    padding: 9px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    background: var(--superficie);
+    user-select: none;
+}
+
+.casilla:has(input:checked) {
+    border-color: var(--pino);
+    background: var(--pino-claro);
+    color: var(--pino);
+}
+
+.casilla input { accent-color: var(--pino); width: 16px; height: 16px; margin: 0; }
+
+/* ============================================================
+   AVISOS
+   ============================================================ */
+
+.aviso {
+    border-left: 3px solid var(--senal);
+    background: var(--senal-tenue);
+    color: #5C4802;
+    padding: 12px 16px;
+    border-radius: 0;
+    font-size: 13.5px;
+    margin: 18px 0;
+}
+
+.aviso-error {
+    border-left-color: var(--error);
+    background: var(--error-tenue);
+    color: var(--error);
+}
+
+.aviso-exito {
+    border-left-color: var(--exito);
+    background: var(--exito-tenue);
+    color: var(--exito);
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+
+.boton {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radio);
+    padding: 13px 26px;
+    cursor: pointer;
+    transition: background .15s, transform .05s;
+}
+
+.boton:active { transform: translateY(1px); }
+
+.boton:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+.boton-principal { background: var(--pino); color: #FFFFFF; }
+.boton-principal:hover:not(:disabled) { background: #0F2F2A; }
+
+.boton-accion { background: var(--senal); color: #3D3000; }
+.boton-accion:hover:not(:disabled) { background: #C99F04; }
+
+.boton-secundario {
+    background: transparent;
+    color: var(--tinta-suave);
+    border: 1.5px solid var(--borde-fuerte);
+}
+.boton-secundario:hover:not(:disabled) { border-color: var(--pino); color: var(--pino); }
+
+.boton-ancho { width: 100%; }
+
+.fila-botones { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ============================================================
+   INDICADORES
+   ============================================================ */
+
+.rejilla-indicadores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--borde);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+}
+
+.indicador { background: var(--superficie); padding: 16px 18px; }
+
+@media (max-width: 760px) {
+    .rejilla-indicadores { grid-template-columns: repeat(2, 1fr); }
+}
+
+.indicador-numero {
+    font-family: var(--display);
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--pino);
+}
+
+.indicador-numero.alerta { color: var(--error); }
+
+.indicador-etiqueta {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--tinta-tenue);
+    margin-top: 4px;
+}
+
+/* ============================================================
+   FICHA DE CURSO
+   ============================================================ */
+
+.ficha-curso {
+    border-left: 3px solid var(--pino);
+    padding-left: 18px;
+    margin-bottom: 22px;
+}
+
+.ficha-etiqueta {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--tinta-tenue);
+}
+
+.ficha-valor {
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.ficha-programa { font-size: 14px; color: var(--tinta-suave); font-family: var(--sans); font-weight: 400; }
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+
+.envoltura-tabla {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: auto;
+    max-height: 460px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: var(--superficie-alt);
+    text-align: left;
+    padding: 11px 14px;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tinta-suave);
+    border-bottom: 1px solid var(--borde);
+    white-space: nowrap;
+}
+
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--superficie-alt); }
+
+tbody tr:last-child td { border-bottom: none; }
+
+tbody tr:hover { background: var(--superficie-alt); }
+
+.celda-mono { font-family: var(--mono); font-size: 12.5px; color: var(--tinta-tenue); }
+
+/* ============================================================
+   ETIQUETAS
+   ============================================================ */
+
+.etiqueta {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-family: var(--mono);
+}
+
+.etiqueta-ovi { background: var(--pino-claro); color: var(--pino); }
+.etiqueta-ova { background: var(--senal-tenue); color: var(--senal-oscuro); }
+.etiqueta-h5p { background: #E9E6F5; color: #453A7A; }
+.etiqueta-pdf { background: #F5E9E6; color: #7A483A; }
+
+/* ============================================================
+   CREDENCIALES
+   ============================================================ */
+
+.campo-texto { margin-bottom: 14px; }
+
+.campo-texto label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tinta-suave);
+    margin-bottom: 6px;
+}
+
+.campo-texto input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 11px 14px;
+    border: 1.5px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    background: var(--superficie);
+    color: var(--tinta);
+}
+
+.campo-texto input:focus { outline: none; border-color: var(--pino); }
+
+.nota-seguridad {
+    font-size: 12.5px;
+    color: var(--tinta-tenue);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   PROGRESO
+   ============================================================ */
+
+.barra-progreso {
+    height: 10px;
+    background: var(--superficie-alt);
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 18px 0 10px;
+}
+
+.barra-relleno {
+    height: 100%;
+    background: var(--pino);
+    width: 0%;
+    transition: width .4s ease;
+}
+
+.linea-estado {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--tinta-suave);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.actividad-actual {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 500;
+    margin: 4px 0 0;
+    min-height: 26px;
+}
+
+/* Señal visual: el registro de filas procesadas */
+.registro-filas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 20px;
+}
+
+.marca-fila {
+    width: 11px;
+    height: 20px;
+    border-radius: 1px;
+    background: var(--superficie-alt);
+    border: 1px solid var(--borde);
+}
+
+.marca-fila.exito { background: var(--pino); border-color: var(--pino); }
+.marca-fila.error { background: var(--error); border-color: var(--error); }
+.marca-fila.activa { background: var(--senal); border-color: var(--senal-oscuro); }
+
+/* ============================================================
+   CARGADOR
+   ============================================================ */
+
+.cargador {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: girar .7s linear infinite;
+    vertical-align: -2px;
+    margin-right: 8px;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ============================================================
+   PIE
+   ============================================================ */
+
+.pie {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--tinta-tenue);
+    padding: 24px;
+}
+
+.oculto { display: none !important; }
+
+body { background: #E4E4DC; }
+.portada { background: #16211F; color: #EDEDE6; padding: 56px 24px 48px; text-align: center; border-bottom: 4px solid #E3B505; }
+.portada h1 { font-family: 'Archivo', sans-serif; font-size: 40px; font-weight: 600; margin: 0 0 10px; letter-spacing: -0.02em; }
+.portada h1 span { color: #E3B505; }
+.portada p { max-width: 640px; margin: 0 auto; color: rgba(237,237,230,.72); font-size: 15.5px; }
+.etiquetas-portada { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+.etiqueta-portada { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; padding: 5px 11px; border: 1px solid rgba(237,237,230,.28); border-radius: 3px; color: rgba(237,237,230,.8); }
+.contenedor { max-width: 1180px; margin: 0 auto; padding: 48px 24px 80px; }
+.seccion { margin-bottom: 64px; }
+.cabecera-seccion { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
+.numero-paso { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; background: #17423B; color: #E3B505; padding: 5px 12px; border-radius: 3px; white-space: nowrap; margin-top: 3px; }
+.titulo-seccion { font-family: 'Archivo', sans-serif; font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+.nota-seccion { margin: 0; color: #4A5754; font-size: 14.5px; max-width: 760px; }
+.marco { border: 1px solid #B4B4A8; border-radius: 8px; overflow: hidden; background: #EDEDE6; box-shadow: 0 6px 20px rgba(22,33,31,.09); }
+.lienzo { pointer-events: none; }
+.panel-info { background: #FFFFFF; border: 1px solid #D6D6CD; border-radius: 8px; padding: 28px; margin-bottom: 26px; }
+.panel-info h3 { font-family: 'Archivo', sans-serif; font-size: 17px; font-weight: 600; margin: 0 0 14px; }
+.lista-reglas { margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.85; }
+.lista-reglas code { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; background: #F1EFE8; padding: 2px 6px; border-radius: 3px; }
+.aviso-vista { background: #FBF0CC; border-left: 3px solid #E3B505; color: #5C4802; padding: 14px 18px; font-size: 14px; margin-bottom: 34px; }
+</style>
+</head>
+<body>
+<div class="portada">
+  <h1>AUTO PRIZMA <span>PRO</span></h1>
+  <p>Cargue masivo de recursos académicos en PRIZMA. Vista previa estática de las tres pantallas: se ve sin instalar nada.</p>
+  <div class="etiquetas-portada">
+    <span class="etiqueta-portada">FastAPI</span><span class="etiqueta-portada">Playwright</span>
+    <span class="etiqueta-portada">Chromium</span><span class="etiqueta-portada">openpyxl</span>
+    <span class="etiqueta-portada">Docker</span><span class="etiqueta-portada">Railway</span>
+  </div>
+</div>
+<div class="contenedor">
+  <div class="aviso-vista">
+    Lo de abajo es el HTML real de la aplicación con datos de un curso de prueba.
+    Los botones no responden porque no hay servidor detrás.
+  </div>
+  
+<section class="seccion">
+  <div class="cabecera-seccion">
+    <span class="numero-paso">Paso 1</span>
+    <div><h2 class="titulo-seccion">Seleccionar archivos</h2><p class="nota-seccion">La persona elige la matriz y el ZIP y marca OVI y OVA. Nada llega a PRIZMA todavía.</p></div>
+  </div>
+  <div class="marco"><div class="lienzo">
+
+<header class="barra-superior">
+    <div class="barra-contenido">
+        <h1 class="marca">AUTO PRIZMA <span>PRO</span></h1>
+        <div class="sello">Paso 1 de 3 &middot; Seleccionar archivos</div>
+    </div>
+</header>
+
+<main class="pagina">
+    
+
+
+
+<div class="tarjeta">
+    <h2 class="tarjeta-titulo">Archivos del curso</h2>
+    <p class="tarjeta-nota">
+        Sube la matriz del curso y el paquete de recursos. Nada se envía a PRIZMA todavía.
+    </p>
+
+    <form id="formulario-analisis">
+        <div class="rejilla-dos">
+            <label class="campo-archivo" id="zona-excel">
+                <span class="campo-etiqueta">Matriz del curso</span>
+                <span class="campo-valor" id="nombre-excel">Elegir archivo .xlsx</span>
+                <input type="file" id="archivo-excel" name="archivo_excel" accept=".xlsx" required>
+            </label>
+
+            <label class="campo-archivo" id="zona-zip">
+                <span class="campo-etiqueta">Paquete de recursos</span>
+                <span class="campo-valor" id="nombre-zip">Elegir archivo .zip</span>
+                <input type="file" id="archivo-zip" name="archivo_zip" accept=".zip" required>
+            </label>
+        </div>
+
+        <p class="campo-etiqueta" style="margin-top:24px">Categorías a procesar</p>
+        <div class="grupo-categorias">
+            <label class="casilla">
+                <input type="checkbox" value="OVI" checked class="casilla-categoria"> OVI
+            </label>
+            <label class="casilla">
+                <input type="checkbox" value="OVA" checked class="casilla-categoria"> OVA
+            </label>
+        </div>
+
+        <div class="aviso">
+            Retos Evaluativos, Challenge, Video Intro, Video Cierre y Video a cámara se omiten.
+            Esas actividades no se modifican en PRIZMA.
+        </div>
+
+        <div id="mensaje-error" class="aviso aviso-error oculto"></div>
+
+        <button type="submit" class="boton boton-principal boton-ancho" id="boton-analizar">
+            Analizar archivos
+        </button>
+    </form>
+</div>
+
+
+</main>
+
+<footer class="pie">
+    Los archivos se eliminan al terminar. Las credenciales no se guardan en ningún momento.
+</footer>
+
+</div></div>
+</section>
+<section class="seccion">
+  <div class="cabecera-seccion">
+    <span class="numero-paso">Paso 2</span>
+    <div><h2 class="titulo-seccion">Revisar y confirmar</h2><p class="nota-seccion">Se lee la matriz y se indexa el ZIP. Aquí se ve qué se va a tocar y qué se omite, antes de escribir las credenciales.</p></div>
+  </div>
+  <div class="marco"><div class="lienzo">
+
+<header class="barra-superior">
+    <div class="barra-contenido">
+        <h1 class="marca">AUTO PRIZMA <span>PRO</span></h1>
+        <div class="sello">Paso 2 de 3 &middot; Revisar y confirmar</div>
+    </div>
+</header>
+
+<main class="pagina">
+    
+
+<div class="tarjeta">
+    <div class="ficha-curso">
+        <div class="ficha-etiqueta">Curso detectado</div>
+        <div class="ficha-valor">Gestión de la Calidad Total</div>
+        <div class="ficha-programa">Ingeniería Industrial</div>
+    </div>
+
+    <div class="rejilla-indicadores">
+        <div class="indicador">
+            <div class="indicador-numero">4</div>
+            <div class="indicador-etiqueta">OVI</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">2</div>
+            <div class="indicador-etiqueta">OVA</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">5</div>
+            <div class="indicador-etiqueta">H5P esperados</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">1</div>
+            <div class="indicador-etiqueta">PDF esperados</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">5</div>
+            <div class="indicador-etiqueta">H5P en el ZIP</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">1</div>
+            <div class="indicador-etiqueta">PDF en el ZIP</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">6</div>
+            <div class="indicador-etiqueta">Total en el ZIP</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero alerta">2</div>
+            <div class="indicador-etiqueta">Omitidas</div>
+        </div>
+    </div>
+
+    
+    
+</div>
+
+<div class="tarjeta">
+    <h2 class="tarjeta-titulo">Actividades que se procesarán</h2>
+    <p class="tarjeta-nota">6 actividades en total.</p>
+
+    <div class="envoltura-tabla">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fila</th>
+                    <th>Semana</th>
+                    <th>Unidad</th>
+                    <th>Actividad</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    <td class="celda-mono">7</td>
+                    <td>Semana 1</td>
+                    <td>Unidad 1</td>
+                    <td>Introducción a la calidad</td>
+                    <td>
+                        <span class="etiqueta etiqueta-ovi">OVI</span>
+                    </td>
+                    <td>
+                        
+                        <span class="etiqueta etiqueta-h5p">H5P</span>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="celda-mono">8</td>
+                    <td>Semana 1</td>
+                    <td>Unidad 1</td>
+                    <td>Normas ISO 9001</td>
+                    <td>
+                        <span class="etiqueta etiqueta-ova">OVA</span>
+                    </td>
+                    <td>
+                        
+                        <span class="etiqueta etiqueta-h5p">H5P</span>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="celda-mono">9</td>
+                    <td>Semana 2</td>
+                    <td>Unidad 1</td>
+                    <td>Herramientas estadísticas</td>
+                    <td>
+                        <span class="etiqueta etiqueta-ovi">OVI</span>
+                    </td>
+                    <td>
+                        
+                        <span class="etiqueta etiqueta-pdf">PDF</span>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="celda-mono">12</td>
+                    <td>Semana 3</td>
+                    <td>Unidad 2</td>
+                    <td>Infografía de procesos</td>
+                    <td>
+                        <span class="etiqueta etiqueta-ovi">OVI</span>
+                    </td>
+                    <td>
+                        
+                        <span class="etiqueta etiqueta-h5p">H5P</span>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="celda-mono">13</td>
+                    <td>Semana 4</td>
+                    <td>Unidad 2</td>
+                    <td>Auditoría interna</td>
+                    <td>
+                        <span class="etiqueta etiqueta-ova">OVA</span>
+                    </td>
+                    <td>
+                        
+                        <span class="etiqueta etiqueta-h5p">H5P</span>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="celda-mono">14</td>
+                    <td>Semana 4</td>
+                    <td>Unidad 2</td>
+                    <td>Actividad sin archivo en el zip</td>
+                    <td>
+                        <span class="etiqueta etiqueta-ovi">OVI</span>
+                    </td>
+                    <td>
+                        
+                        <span class="etiqueta etiqueta-h5p">H5P</span>
+                        
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="tarjeta">
+    <h2 class="tarjeta-titulo">Credenciales de PRIZMA</h2>
+    <p class="tarjeta-nota">
+        Entra con tu propia cuenta. PRIZMA registrará los cambios a tu nombre.
+    </p>
+
+    <form id="formulario-inicio">
+        <div class="campo-texto">
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario" name="usuario" autocomplete="username" required>
+        </div>
+
+        <div class="campo-texto">
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena" name="contrasena" autocomplete="current-password" required>
+        </div>
+
+        <p class="nota-seguridad">
+            Las credenciales viven solo en la memoria del servidor mientras corre este cargue.
+            No se escriben en disco, no se registran en los logs y desaparecen al terminar.
+        </p>
+
+        
+        <label class="casilla" style="margin-top:14px">
+            <input type="checkbox" id="login-manual"> Iniciar sesión a mano en la ventana de Chromium
+        </label>
+        
+
+        <div id="mensaje-error" class="aviso aviso-error oculto"></div>
+
+        <div class="fila-botones" style="margin-top:22px">
+            <button type="submit" class="boton boton-accion" id="boton-iniciar">
+                Iniciar cargue en PRIZMA
+            </button>
+            <a href="/" class="boton boton-secundario" style="text-decoration:none;display:inline-block">
+                Cambiar archivos
+            </a>
+        </div>
+    </form>
+</div>
+
+
+</main>
+
+<footer class="pie">
+    Los archivos se eliminan al terminar. Las credenciales no se guardan en ningún momento.
+</footer>
+
+</div></div>
+</section>
+<section class="seccion">
+  <div class="cabecera-seccion">
+    <span class="numero-paso">Paso 3</span>
+    <div><h2 class="titulo-seccion">Cargue en vivo</h2><p class="nota-seccion">Cada barra del registro es una fila del Excel: verde si guardó con PATCH 2xx, roja si falló. Un error no detiene el curso.</p></div>
+  </div>
+  <div class="marco"><div class="lienzo">
+
+<header class="barra-superior">
+    <div class="barra-contenido">
+        <h1 class="marca">AUTO PRIZMA <span>PRO</span></h1>
+        <div class="sello">Paso 3 de 3 &middot; Cargue en PRIZMA</div>
+    </div>
+</header>
+
+<main class="pagina">
+    
+
+<div class="tarjeta">
+    <div class="ficha-curso">
+        <div class="ficha-etiqueta">Cargando curso</div>
+        <div class="ficha-valor">Gestión de la Calidad Total</div>
+        <div class="ficha-programa">Ingeniería Industrial</div>
+    </div>
+
+    <div class="ficha-etiqueta">Estado</div>
+    <p class="actividad-actual" id="texto-actividad">Preparando el navegador</p>
+
+    <div class="barra-progreso">
+        <div class="barra-relleno" id="relleno-progreso"></div>
+    </div>
+
+    <div class="linea-estado">
+        <span id="texto-contador">0 de 6</span>
+        <span id="texto-porcentaje">0%</span>
+    </div>
+
+    <div class="registro-filas" id="registro-filas"></div>
+</div>
+
+<div class="tarjeta">
+    <div class="rejilla-indicadores">
+        <div class="indicador">
+            <div class="indicador-numero" id="numero-procesadas">0</div>
+            <div class="indicador-etiqueta">Procesadas</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero" id="numero-exitosas">0</div>
+            <div class="indicador-etiqueta">Exitosas</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero alerta" id="numero-errores">0</div>
+            <div class="indicador-etiqueta">Errores</div>
+        </div>
+        <div class="indicador">
+            <div class="indicador-numero">6</div>
+            <div class="indicador-etiqueta">Total</div>
+        </div>
+    </div>
+
+    <div id="aviso-final" class="aviso aviso-exito oculto" style="margin-top:20px"></div>
+
+    <div class="fila-botones" style="margin-top:20px">
+        <a href="/reporte/ff02c549a16c" class="boton boton-accion oculto" id="boton-reporte"
+           style="text-decoration:none;display:inline-block">
+            Descargar reporte CSV
+        </a>
+        <a href="/" class="boton boton-secundario oculto" id="boton-nuevo"
+           style="text-decoration:none;display:inline-block">
+            Cargar otro curso
+        </a>
+    </div>
+</div>
+
+
+</main>
+
+<footer class="pie">
+    Los archivos se eliminan al terminar. Las credenciales no se guardan en ningún momento.
+</footer>
+
+</div></div>
+</section>
+  <div class="panel-info">
+    <h3>Las siete reglas que el código nunca rompe</h3>
+    <ol class="lista-reglas">
+      <li>H5P y PDF se cargan <strong>siempre</strong> en el campo <strong>Recurso</strong>.</li>
+      <li><strong>Material descargable</strong> se ignora siempre: se descarta por su atributo <code>accept</code>.</li>
+      <li>Si dos campos aceptan <code>.h5p</code>, no se guarda: <code>ERROR_CAMPO_RECURSO_NO_ENCONTRADO</code>.</li>
+      <li>Cero o más de una coincidencia de actividad: se registra el error y se sigue con la siguiente.</li>
+      <li>Si dos archivos del ZIP empatan: <code>ERROR_RECURSO_DUPLICADO</code>. Nunca se elige al azar.</li>
+      <li><code>NO_DISPONIBLE</code> se borra solo si es el único contenido de la descripción.</li>
+      <li>Tras confirmar el PATCH 2xx, <strong>no</strong> se reabre la actividad.</li>
+    </ol>
+  </div>
+  <div class="panel-info">
+    <h3>Qué está probado y qué no</h3>
+    <ol class="lista-reglas">
+      <li><strong>Probado:</strong> cabecera desplazada, arrastre de semana y unidad en celdas combinadas, filtrado de Retos Evaluativos y Video Intro, clasificación H5P/PDF, índice del ZIP, empates de puntuación, extracción conservando el nombre, reporte CSV, las nueve rutas web, y la detección del campo Recurso frente a Material descargable en Chromium real.</li>
+      <li><strong>Sin probar:</strong> el login en PRIZMA y la búsqueda de actividades reales, porque hace falta una cuenta. Ejecuta <code>python herramientas/inspector_login.py</code> antes de confiar en el login automático.</li>
+    </ol>
+  </div>
+</div>
+</body>
+</html>
